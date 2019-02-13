@@ -11,12 +11,15 @@ import org.json.JSONObject
 import java.io.UnsupportedEncodingException
 import java.nio.charset.Charset
 
+const val API_KEY = "933b65fca5ee88d5b921aa00f8d3e767"
+
 class MovieDBRouter(method: Int, url: String, private val listener: (response: JSONArray) -> Unit, errorListener: Response.ErrorListener)
-    : Request<JSONObject>(method, "https://api.themoviedb.org/3$url&api_key=933b65fca5ee88d5b921aa00f8d3e767", errorListener) {
+    : Request<JSONObject>(method, "https://api.themoviedb.org/3$url&api_key=$API_KEY", errorListener) {
 
     companion object {
         const val IMAGE_BASE = "https://image.tmdb.org/t/p/w500"
-        const val DISCOVER = "/discover/movie?primary_release_date.gte=2014-09-15&primary_release_date.lte=2014-10-22"
+        const val DISCOVER = "/discover/movie?sort_by=popularity.desc"
+        const val PAGE = "&page="
     }
 
     override fun parseNetworkResponse(response: NetworkResponse): Response<JSONObject> {

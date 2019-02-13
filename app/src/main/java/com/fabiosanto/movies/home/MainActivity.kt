@@ -9,11 +9,12 @@ import com.android.volley.toolbox.Volley
 import com.fabiosanto.movies.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.coroutines.GlobalScope
 
 class MainActivity : AppCompatActivity(), HomeContract.View {
     private var moviesAdapter: MoviesAdapter? = null
-
     override lateinit var onMovieClickListener: (Int) -> Unit
+    override lateinit var onMoreDataNeeded: () -> Unit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,11 +23,9 @@ class MainActivity : AppCompatActivity(), HomeContract.View {
 
         val model = HomeModel(Volley.newRequestQueue(this))
         val presenter = HomePresenter(this, model)
-
-        val moviesAdapter = MoviesAdapter(model, onMovieClickListener)
+        moviesAdapter = MoviesAdapter(model, onMovieClickListener, onMoreDataNeeded)
         recyclerView.adapter = moviesAdapter
         recyclerView.layoutManager = GridLayoutManager(this, 2, RecyclerView.VERTICAL, false)
-
     }
 
     override fun setUpView() {

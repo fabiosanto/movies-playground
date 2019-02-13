@@ -5,14 +5,15 @@ class HomeContract {
     interface View {
         fun setUpView()
         fun refreshData()
-        var onMovieClickListener: (Int) -> Unit
         fun showToast(message: String)
+        var onMovieClickListener: (Int) -> Unit
+        var onMoreDataNeeded: () -> Unit
     }
 
     interface Model {
-        val dataSize: Int
-        fun getMovieAt(index: Int): MovieViewState?
+        val list: ArrayList<Any>
         fun loadMovies(onDataReady: () -> Unit, onRequestFailed: (String) -> Unit)
+        fun loadNextPage(onDataReady: () -> Unit, onRequestFailed: (String) -> Unit)
     }
 }
 
@@ -21,12 +22,11 @@ class HomePresenter(private val view: HomeContract.View, private val model: Home
     init {
         view.setUpView()
         view.onMovieClickListener = { onMovieClick(it) }
+        view.onMoreDataNeeded = { model.loadNextPage({ view.refreshData() }, { }) }
         model.loadMovies({ view.refreshData() }, { })
     }
 
-    fun onMovieClick(index: Int) {
-        model.getMovieAt(index)?.let {
-            view.showToast(it.title)
-        }
+    private fun onMovieClick(index: Int) {
+        view.showToast((model.list[index] as Row.MovieItem).movieData.title)
     }
 }
